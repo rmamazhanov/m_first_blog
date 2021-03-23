@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load days_tag %}
+
+
+{% block content %}
+    <div class="uk-container uk-container-small uk-margin-medium-top">
+<p>Имя Фамилия: {{ user.first_name }} {{ user.last_name }}</p>
+<p>Номер карточки: {{ profile.card_id }}</p>
+<p>Номер ИНН: {{ profile.inn }}</p>
+<p>Год рождения: {{ profile.birthday }}</p>
+<p>Отделение: {{ profile.department_id.name }}</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <td>Идентификатор заказа</td>
+                <td>Номер карточки</td>
+                <td>Время</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in profile.appointment_set.all %}
+                <tr>
+                    <td><a href="{% url 'get_ticket' appointment_id=item.appointment_id %}">{{ item.appointment_id }}</a></td>
+                    <td>{{ item.profile.card_id }}</td>
+                    {% format_date_time item.schedule.date item.schedule.time as dt %}
+                    <td>{{ dt }}</td>
+                    {% is_earlier_than_now item.schedule.time item.schedule.date as is_passed %}
+                    <td>{% if not is_passed %}<button class="alert alert-danger deleteAppointmentBtn" data-url="{% url "delete_appointment" id=item.pk %}">Удалить запись</button>{% endif %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        <a href="{% url 'get_med_records' %}">Выписки врачей</a>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script>
+        $('button.deleteAppointmentBtn').on('click', function(e) {
+           e.preventDefault();
+
+           var url = $(this).attr('data-url');
+
+           if (confirm('Are you sure?')) {
+               $.ajax({
+                   method: 'POST',
+                    url: url,
+                   dataType: 'json',
+                   success: function (data) {
+                       if (data.info) {
+                           alert('Appointment successfully deleted')
+                       } else {
+                           alert('Error on delete appointment');
+                       }
+                   },
+                   error: function () {
+
+                   }
+               });
+           }
+        });
+    </script>
+{% endblock %}

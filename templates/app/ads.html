@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="medical_list_news uk-margin-medium-top">
+    <div class="uk-container uk-container-small">
+        <div class="uk-card-body bg-white ">
+            {% for item in ads %}
+            <div class="uk-card   uk-margin" >
+                <div class="">
+                    <div class="uk-card-body uk-padding-remove">
+                        <h2 class="uk-card-title"><a href="{% url 'ads_inner' id=item.id %}">{{ item.title }}</a></h2>
+                        <span>{{ item.date }}</span>
+                        {{ item.text|safe }}
+                    </div>
+                </div>
+            </div>
+            <hr class="uk-margin-medium-top uk-margin-medium-bottom">
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    {#<section class="crumbs">#}
+    {#    <div class="uk-container uk-container-small">#}
+    {#        <ul class="uk-breadcrumb">#}
+    {#            <li><a href="#">Главная страница</a></li>#}
+    {#            <li><a href="#">Item</a></li>#}
+    {#            <li class="uk-disabled"><a href="#">Disabled</a></li>#}
+    {#            <li><span href="#">Специалисты</span></li>#}
+    {#        </ul>#}
+    {#        <h3>Услуги специалиста</h3>#}
+    {#    </div>#}
+    {#</section>#}
+    <section class="specialist uk-margin-medium-top">
+        <div class="uk-container uk-container-small">
+            {% include 'partials/specialist_info.html' %}
+            {% for s in med_service %}
+                <div class="services">
+                    <h4>{{ s.title }}</h4>
+                    <ul>
+                        <li><a href="#">{{ s.medical_service.name }}
+                                <span class="uk-float-right">{{ s.medical_service.price }}сом</span></a></li>
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

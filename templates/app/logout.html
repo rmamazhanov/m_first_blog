@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="auch uk-margin-medium-top">
+        <div class="uk-container uk-container-small">
+            <div class="uk-card-body bg-white uk-flex-center" uk-grid>
+                <form class=" uk-width-1-2@s" method="POST">
+                    {% csrf_token %}
+                    <fieldset class="uk-fieldset">
+
+                        <legend class="uk-legend">Вы только что вышли!</legend>
+
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+{#    <form >#}
+{#    {{ form }}#}
+{#    </form>#}
+{% endblock %}

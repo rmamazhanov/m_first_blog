@@ -1,0 +1,21 @@
+b'
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">\r\n\t
+    <soap:Body>\r\n\t\t
+        <m:CheckUserResponse xmlns:m="http://rg.kg/mis/portal">\r\n\t\t\t<m:return
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            \r\n\t\t\t\t\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\r\n\t\t\t\t<Error
+                    xmlns="http://rg.kg/mis/webportal.xsd">false</Error>\r\n\t\t\t\t<CardId
+                    xmlns="http://rg.kg/mis/webportal.xsd">10899127</CardId>\r\n\t\t\t\t<LastName
+                    xmlns="http://rg.kg/mis/webportal.xsd">
+                \xd0\x9a\xd1\x83\xd0\xbc\xd1\x83\xd1\x88\xd0\xb0\xd0\xb9</LastName>\r\n\t\t\t\t<FirstName
+                    xmlns="http://rg.kg/mis/webportal.xsd">\xd0\x90\xd1\x81\xd0\xb0\xd0\xb5\xd0\xb2\xd0\xb0</FirstName>\r\n\t\t\t\t<MiddleName
+                    xmlns="http://rg.kg/mis/webportal.xsd">
+                \xd0\x96\xd1\x83\xd0\xbc\xd0\xb0\xd0\xbd\xd0\xb0\xd0\xb7\xd0\xb0\xd1\x80\xd0\xbe\xd0\xb2\xd0\xbd\xd0\xb0</MiddleName>\r\n\t\t\t\t<Birthday
+                    xmlns="http://rg.kg/mis/webportal.xsd">1999-08-01</Birthday>\r\n\t\t\t\t<Assigned
+                    xmlns="http://rg.kg/mis/webportal.xsd">true</Assigned>\r\n\t\t\t\t<Sex
+                    xmlns="http://rg.kg/mis/webportal.xsd">0</Sex>\r\n\t\t\t
+        </m:return>
+        \r\n\t\t
+    </m:CheckUserResponse>
+    \r\n\t
+</soap:Body>\r\n</soap:Envelope>'

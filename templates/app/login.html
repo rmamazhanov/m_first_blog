@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <section class="auch uk-margin-medium-top">
+        <div class="uk-container uk-container-small">
+            <div class="uk-card-body bg-white uk-flex-center" uk-grid>
+                <form class=" uk-width-1-2@s" method="POST">
+                    {% csrf_token %}
+                    <fieldset class="uk-fieldset">
+
+                        <legend class="uk-legend">Пожалуйста, авторизуйтесь:</legend>
+
+                        <div class="uk-margin">
+{#                            <p class="uk-margin-remove uk-form-danger">Название ошибки</p>#}
+                            <label class="uk-form-label">Логин:</label>
+                            <input class="uk-input" name="username" type="text" placeholder="">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Пароль:</label>
+                            <input class="uk-input" name="password" type="password" placeholder="">
+                        </div>
+
+{#                        <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">#}
+{#                            <label><input class="uk-checkbox" type="checkbox" checked> Запомнить меня на этом компьютере</label>#}
+{#                        </div>#}
+                        <div class="uk-margin">
+                            <a href="{% url 'request_password_recovery' %}">Забыли свой пароль?</a>
+
+                        </div>
+                        <div class="uk-margin">
+                            <a href="{% url 'signup' %}">Зарегистрироваться</a>
+                        </div>
+                        <div class="uk-margin uk-margin-medium-top">
+                            <button type="submit" class="uk-button-default uk-button">Войти</button>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+{#    <form >#}
+{#    {{ form }}#}
+{#    </form>#}
+{% endblock %}

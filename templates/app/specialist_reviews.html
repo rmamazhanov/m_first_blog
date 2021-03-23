@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{#<section class="crumbs">#}
+{#    <div class="uk-container uk-container-small">#}
+{#        <ul class="uk-breadcrumb">#}
+{#            <li><a href="#">Главная страница</a></li>#}
+{#            <li><a href="#">Item</a></li>#}
+{#            <li class="uk-disabled"><a href="#">Disabled</a></li>#}
+{#            <li><span href="#">Специалисты</span></li>#}
+{#        </ul>#}
+{#        <h3>Отзывы специалиста</h3>#}
+{#    </div>#}
+{#</section>#}
+<section class="specialist uk-margin-medium-top">
+    <div class="uk-container uk-container-small">
+
+        {% include 'partials/specialist_info.html' with reviews_count=reviews.count %}
+
+        <div class="uk-text-center uk-margin-medium-top">
+            <a href="#bottom-scroll" class="uk-button uk-button-default add-comment" uk-scroll="offset: 60"><span class="uk-margin-small-right" uk-icon="icon: plus-circle"></span> Добавить отзыв</a>
+        </div>
+        <div id="comment-wrapper">
+            {% for rev in reviews %}
+                <article class="uk-comment uk-comment-primary">
+                    <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+                        <div class="uk-width-expand">
+                            <h4 class="uk-comment-title uk-margin-remove">{{ rev.name }}<span class="uk-float-right">{{ rev.created_at|date:"m.d.Y" }}</span></h4>
+                        </div>
+                    </header>
+                    <div class="uk-comment-body">
+                        <p>{{ rev.text }}</p>
+                    </div>
+                </article>
+                <hr>
+            {% endfor %}
+        </div>
+        <form action="{% url 'add_review' %}" id="bottom-scroll" method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{ object.id }}" name="pk">
+            <div class="uk-margin">
+                <div class="">
+                    <textarea class="uk-textarea" name="text" id="" cols="30" placeholder="Ваше сообщение" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="uk-margin">
+                <button class="uk-button-default uk-button">Отправить</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+
+    <script>
+        $(document).ready(function () {
+            var form = $('#bottom-scroll');
+            form.on('submit', function (e) {
+                e.preventDefault();
+                var wrapper = $('#comment-wrapper');
+                var data = {
+                    text: form.find('textarea').val(),
+                    pk: form.find('input[name="pk"]').val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                };
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        if(response.success) {
+                            wrapper.append(response.message);
+                            form.find('textarea').val('');
+                            var reviews_count = $('#reviews-count');
+                            var countVal = parseInt(reviews_count.html());
+                            countVal++;
+                            reviews_count.html(countVal);
+                        } else {
+                            UIkit.notification({
+                                message: response.message,
+                                status: 'danger',
+                                pos: 'top-right',
+                                timeout: 5000
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

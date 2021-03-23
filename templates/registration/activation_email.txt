@@ -1,0 +1,3 @@
+
+    {{user}}
+    <a href="http://{{ site }}/accounts/activate/{{activation_key}}">http://{{ site }}{{activation_key}}</a>

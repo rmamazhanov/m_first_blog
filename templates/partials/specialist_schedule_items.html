@@ -1,0 +1,149 @@
+{% load days_tag %}
+
+<div class="schedule uk-margin-medium-top">
+    <div class="header-date uk-text-center">
+
+        <p>
+            <a href="" class="uk-float-left btnPrev" uk-icon="icon: arrow-left" data-next-week="0"></a>
+
+            {{ start }} - {{ end }}
+
+            <a href="" class="uk-float-right btnNext" uk-icon="icon: arrow-right" data-next-week="1"></a>
+        </p>
+
+    </div>
+    <div class="week uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+        {% for day in days %}
+
+            <div>{{ day.dates|date:"d.m.y" }}</div>
+
+        {% endfor %}
+    </div>
+    <div class="filter uk-flex-middle uk-grid uk-margin-remove">
+        <div class="uk-width-1-6 arrow">
+            <span>Клиника <span class="uk-float-right" uk-icon="icon:  chevron-right"></span></span>
+        </div>
+        <div class="uk-width-expand">
+            <form>
+                <div class="">
+                    <div class="">
+                        {{ object.department }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="filter uk-flex-middle uk-grid uk-margin-remove">
+        <div class="uk-width-1-6 arrow">
+            <span>Услуга <span class="uk-float-right" uk-icon="icon:  chevron-right"></span></span>
+        </div>
+        <div class="uk-width-expand">
+            {% get_medical_service_form_for_instance object as medical_service_form %}
+
+            <form>
+                <div class="">
+                    <div class="">
+                        {{ medical_service_form.name }}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="time uk-margin-remove uk-grid-small uk-child-width-expand@s uk-text-center" uk-grid>
+
+        {% for day in days %}
+            <div>
+                {% get_schedule_by_doctor_id object.doc_id day as schedule %}
+                {% for item in schedule %}
+                    {% if not item.busy %}
+                        {% is_earlier_than_today day.dates as is_earlier %}
+
+                        {% if not is_earlier %}
+                            {% is_earlier_than_now item.time day.dates as is_earlier_then_now %}
+                            {% if not is_earlier_then_now %}
+                                <a uk-toggle="target: #modal_time_{{ item.pk }}" id="pass-schedule-{{ item.pk }}">
+                                    <p class="free modal-trigger">
+                                        {{ item.time }}
+                                    </p>
+                                </a>
+                            {% else %}
+                                <p>{{ item.time }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p>{{ item.time }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p>{{ item.time }}</p>
+                    {% endif %}
+
+                    <div id="modal_time_{{ item.pk }}" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body">
+                            <button class="uk-modal-close-default" type="button" uk-close></button>
+                            <form>
+                                <fieldset class="uk-fieldset">
+                                    {% if request.user.is_authenticated %}
+                                        <legend class="uk-legend">Проверьте корректность выбранных параметров</legend>
+                                        <div class="uk-grid" uk-grid>
+                                            <div class="uk-width-1-4@m uk-text-left@m"><b>Клиника</b></div>
+                                            <div class="uk-width-expand@m uk-text-left@m">{{ object.department.name }}
+                                            </div>
+                                        </div>
+                                        <div class="uk-grid" uk-grid>
+                                            <div class="uk-width-1-4@m uk-text-left@m"><b>Услуга</b></div>
+                                            {% get_service_by_doctor object as service %}
+
+                                            <div class="uk-width-expand@m uk-text-left@m">{{ service.name }}
+                                            </div>
+                                        </div>
+                                        <div class="uk-grid" uk-grid>
+                                            <div class="uk-width-1-4@m uk-text-left@m"><b>Дата записи</b></div>
+                                            {% format_date_time item.date item.time as dt %}
+                                            <div class="uk-width-expand@m uk-text-left@m">{{ dt }}</div>
+                                        </div>
+                                        <div class="uk-grid" uk-grid>
+                                            <div class="uk-width-1-4@m uk-text-left@m"><b>Тип записи</b></div>
+                                            <div class="uk-width-expand@m uk-text-left@m">Прием по талону.</div>
+                                        </div>
+                                        <div class="uk-alert-success success-{{ item.pk }}" uk-alert hidden>
+                                            <a class="uk-alert-close" uk-close></a>
+                                            <p>
+                                                Вы успешно записаны!
+                                            </p>
+                                        </div>
+                                        <div class="uk-alert-danger fail-{{ item.pk }}" uk-alert hidden>
+                                            <a class="uk-alert-close" uk-close></a>
+                                            <p>
+                                                Невозможно записать
+                                            </p>
+                                        </div>
+
+                                        <div class="uk-text-right">
+                                            <a href="" class="uk-button-default uk-button makeAppointmentBtn"
+                                               data-url="{% url "make_appointment" id=item.pk %}"
+                                               data-doctor-id="{{ object.pk }}" data-id="{{ item.pk }}" id="pass-button-{{ item.pk }}">Отправить</a>
+                                        </div>
+                                        <div class="uk-margin uk-text-center" id="loader-{{ item.pk }}" style="display: none;">
+                                            <span uk-spinner></span>
+                                        </div>
+                                    {% else %}
+                                        <legend class="uk-legend"><a href="{% url "login" %}">Авторизуйтесь
+                                            пожалуйста!</a></legend>
+                                    {% endif %}
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% endfor %}
+
+        {#                <div class="reception_is_not">#}
+        {#                    <p>В этот день приёма нет</p>#}
+        {#                </div>#}
+        {#                <div class="reception_is_not">#}
+        {#                    <p>В этот день приёма нет</p>#}
+        {#                </div>#}
+
+    </div>
+</div>

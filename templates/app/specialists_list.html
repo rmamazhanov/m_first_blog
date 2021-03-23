@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load staticfiles days_tag %}
+{% block content %}
+{#<section class="crumbs">#}
+{#    <div class="uk-container uk-container-small">#}
+{#        <ul class="uk-breadcrumb">#}
+{#            <li><a href="#">Главная страница</a></li>#}
+{#            <li><a href="#">Item</a></li>#}
+{#            <li class="uk-disabled"><a href="#">Disabled</a></li>#}
+{#            <li><span href="#">Специалисты</span></li>#}
+{#        </ul>#}
+{#        <h3>Специалисты</h3>#}
+{#    </div>#}
+{#</section>#}
+<section class="specialist_list uk-margin-medium-top">
+    <div class="uk-container uk-container-small">
+        <form>
+            <div class="uk-grid uk-child-width-1-2@s uk-child-width-1-3@m" uk-grid>
+                <div class="">
+                    <select  class="select-specialist" placeholder="Все клиники" id="hospital_filter">
+                        <option value></option>
+                        {% for op in hospitals %}
+                            <option value="{{ op.hospital_id }}"{% if hospital_id == op.hospital_id %} selected{% endif %}>{{ op.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+{#                <div class="search uk-width-expand">#}
+{#                    <input class="uk-input" type="text" placeholder="Фамилия, имя или отчество">#}
+{#                    <button class="uk-button uk-button-default" type="submit">Поиск</button>#}
+{#                </div>#}
+            </div>
+        </form>
+        <div class="uk-grid uk-grid-small uk-child-width-1-3@m uk-child-width-1-2@s uk-margin-medium-top" uk-grid>
+            {% for doctor in doctors %}
+            <div class="item">
+                <div class="uk-card uk-card-default uk-box-shadow-hover-xlarge">
+                    <a href="" class="commenting" title="Отзывы специалиста" uk-tooltip>
+                        <span  uk-icon="icon:  commenting"></span>
+                        1
+                    </a>
+                    <div class="uk-card-media-top">
+                        <a href="{% url 'doctor_detail' pk=doctor.id %}"><img src="{% if doctor.image %}{{ doctor.image.url }}{% else %}{% static 'img/png/noimage.png' %}{% endif %}" alt=""></a>
+                    </div>
+                    <div class="uk-card-body">
+                        <h2 class="uk-card-title uk-text-center uk-margin-remove"><a href="{% url 'doctor_detail' pk=doctor.id %}">
+                            {{ doctor.last_name }} {{ doctor.fist_name }} {{ doctor.middle_name }}</a></h2>
+                        <span class="prof uk-display-block uk-text-center">{{ doctor.position }}</span>
+                        <div class="date uk-text-center">
+                            <span>Пн</span>
+                            <span>Вт</span>
+                            <span>Ср</span>
+                            <span>Чт</span>
+                            <span>Пт</span>
+                            <span>Сб</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <ul class="uk-pagination uk-margin-medium-top uk-flex-center" uk-margin>
+            {% if doctors.has_previous %}
+                <li><a href="{% prepare_url request.get_full_path 'page' %}page={{ doctors.prev_page_number }}"><span uk-pagination-previous></span></a></li>
+            {% endif %}
+            <li>Страница {{ doctors.number }} из {{ doctors.paginator.num_pages }}</li>
+            {% if doctors.has_next %}
+                 <li><a href="{% prepare_url request.get_full_path 'page' %}page={{ doctors.next_page_number }}"><span uk-pagination-next></span></a></li>
+            {% endif %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+
+    <script>
+        $(document).ready(function () {
+            var select = $('#hospital_filter');
+
+
+            select.on('change', function () {
+                var value = $(this).val();
+                //console.log(prepareUrl(document.location.href, 'hospital') + 'hospital=' + value);
+                window.location.href = prepareUrl(document.location.href, 'hospital') + 'hospital=' + value
+            });
+
+            function prepareUrl(url, param) {
+                if(url.includes('?')) {
+                    b = url.split('?')[0];
+                    url = url.split('?')[1];
+                    if(url.includes('&')) {
+                        var params = url.split('&');
+                        var index = -1;
+                        for(var i=0; i < params.length; ++i) {
+                            var k = params[i].split('=')[0];
+                            if (k === param) {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if(index > -1) {
+                            var new_url = '';
+                            for(var s=0; s < params.length; ++s) {
+                                if (index !== s) {
+                                    new_url += new_url !== '' ? params[i] : '&' + params[i];
+                                }
+                            }
+                            return b + '?' + new_url + '&';
+                        }
+                        return b + '?' + url + '&'
+                    } else {
+                        if(url.includes('=')) {
+                            var _k = url.split('=')[0];
+                            if(_k === param) {
+                                return b + '?';
+                            } else {
+                                return b + '?' + url + '&';
+                            }
+                        }
+                        return b + '?';
+                    }
+                }
+                return url + '?';
+            }
+        });
+    </script>
+{% endblock %}

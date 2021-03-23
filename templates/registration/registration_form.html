@@ -1,0 +1,104 @@
+
+
+{% extends 'base.html' %}
+{% block content %}
+    <section class="auch uk-margin-medium-top">
+        <div class="uk-container uk-container-small">
+            <div class="uk-card-body bg-white uk-flex-center" uk-grid>
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class=".uk-alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class=".uk-alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form class=" uk-width-1-2@s" method="POST">
+                    {% csrf_token %}
+                    <fieldset class="uk-fieldset">
+
+                        <legend class="uk-legend">Регистрация:</legend>
+
+                        <div class="uk-margin ">
+                            {#                        <p class="uk-margin-remove uk-form-danger">Название ошибки</p>#}
+                            <label class="uk-form-label">ИНН:</label>
+                            <input class="uk-input" name="inn" type="number" placeholder="14 символов">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Фамилия:</label>
+                            <input class="uk-input" name="last_name" type="text" placeholder="">
+                        </div>
+                        <div class="uk-margin ">
+                            {#                        <p class="uk-margin-remove uk-form-danger">Название ошибки</p>#}
+                            <label class="uk-form-label">Имя:</label>
+                            <input class="uk-input" name="first_name" type="text" placeholder="">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Отчество:</label>
+                            <input class="uk-input" name="middle_name" type="text" placeholder="">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Год рождения:</label>
+                            <input class="uk-input" name="birthday" type="text"
+                                   placeholder="дд.мм.гггг">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="hos">Госпиталь:</label>
+                            {{ form.hospital }}
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">*Логин (мин. 3 символа):</label>
+                            <input class="uk-input" name="username" type="text" placeholder="" required>
+                        </div>
+                        <div class="uk-margin ">
+                            {#                        <p class="uk-margin-remove uk-form-danger">Название ошибки</p>#}
+                            <label class="uk-form-label">*Пароль:</label>
+                            <input class="uk-input" name="password1" type="password"
+                                   placeholder="Мин. 8 симв. буквы и цифры">
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label">*Подтверждение пароля:</label>
+                            <input class="uk-input" name="password2" type="password" placeholder="Повторите пароль">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">*E-Mail:</label>
+                            <input class="uk-input" name="email" type="text" placeholder="" required>
+                        </div>
+                        {#                    <div class="uk-margin">#}
+                        {#                        <b class="uk-display-block">Защита от автоматической регистрации</b>#}
+                        {#                        <label class="uk-form-label uk-display-block">*Введите слово на картинке:</label>#}
+                        {#                        Капча#}
+                        {#                        <input class="uk-input" type="text" placeholder="">#}
+                        {#                    </div>#}
+                        <div class="uk-margin">
+                            <a href="/login">Войти в аккаунт</a>
+                        </div>
+                        <div class="uk-margin uk-margin-medium-top">
+                            <button type="submit" class="uk-button-default uk-button">Регистрация</button>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+{##}
+{##}
+{#    <form method="POST">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <input type="submit">#}
+{#    </form>#}
+{##}
+
+
+{% endblock %}

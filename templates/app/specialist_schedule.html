@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+{#    <section class="crumbs">#}
+{#        <div class="uk-container uk-container-small">#}
+{#            <ul class="uk-breadcrumb">#}
+{#                <li><a href="#">Главная страница</a></li>#}
+{#                <li><a href="#">Специалисты</a></li>#}
+{#                <li class="uk-disabled"><a href="#"></a></li>#}
+{#                <li><span href="#">Специалисты</span></li>#}
+{#                <li><span href="">{{ do }}</span></li>#}
+{#            </ul>#}
+{#            <h3>Расписание</h3>#}
+{#        </div>#}
+{#    </section>#}
+    <section class="specialist uk-margin-medium-top">
+        <div class="uk-container uk-container-small">
+
+            {% include 'partials/specialist_info.html' %}
+            <div id="scheduleBlock">
+                {% include 'partials/specialist_schedule_items.html' %}
+            </div>
+        </div>
+    </section>
+
+
+    <!-- This is the modal with the default close button -->
+
+
+
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    <script>
+        $(document).on('click', '.btnPrev,.btnNext', function(event) {
+            event.preventDefault();
+            var isNextWeek = $(this).attr('data-next-week');
+            var scheduleBlock = $('#scheduleBlock');
+
+            $.ajax({
+                method: 'POST',
+                url: '{% url "doctor_schedule" pk=object.pk %}',
+                dataType: 'html',
+                data: {next_week: isNextWeek},
+                success: function(html) {
+                    $(scheduleBlock).html(html);
+                },
+                error: function () {
+
+                }
+            });
+        });
+
+        $(document).on('click', 'a.makeAppointmentBtn', function(e) {
+           e.preventDefault();
+
+           var doctorId = $(this).attr('data-doctor-id');
+           var url = $(this).attr('data-url');
+           var id = $(this).attr('data-id');
+           var button = $(this);
+           var loader = $('#loader-' + id);
+           button.fadeOut('fast', function () {
+               loader.fadeIn('fast');
+
+               $.ajax({
+                   method: 'POST',
+                   url: url,
+                   dataType: 'json',
+                   data: {doctor_id: doctorId},
+                   success: function (data) {
+                       if (data.info !== 'Error') {
+                           $('.success-' + id).removeAttr('hidden');
+                           $('#pass-button-' + id).fadeOut('slow');
+                       } else {
+                           $('.fail-' + id).removeAttr('hidden');
+                       }
+                       loader.fadeOut('fast');
+                   },
+                   error: function () {
+
+                   }
+               });
+           });
+        });
+    </script>
+{% endblock %}

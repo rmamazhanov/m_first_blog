@@ -1,0 +1,6 @@
+settings_local.py
+.idea
+*.pyc
+*.sqlite3
+/static
+node_modules

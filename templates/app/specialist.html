@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+{#    <section class="crumbs">#}
+{#    <div class="uk-container uk-container-small">#}
+{#        <ul class="uk-breadcrumb">#}
+{#            <li><a href="#">Главная страница</a></li>#}
+{#            <li><a href="#">Item</a></li>#}
+{#            <li class="uk-disabled"><a href="#">Disabled</a></li>#}
+{#            <li><span href="#">Специалисты</span></li>#}
+{#        </ul>#}
+{#        <h3>Название страницы</h3>#}
+{#    </div>#}
+{#</section>#}
+<section class="specialist uk-margin-medium-top">
+    <div class="uk-container uk-container-small">
+        <div class="uk-grid uk-flex-middle" uk-grid>
+            <div class="uk-width-1-5@m">
+                <div class="img-wrapper">
+                    <img src="{% if object.image %}{{ object.image.url }}{% else %}{% static 'img/png/noimage.png' %}{% endif %}" alt="">
+                </div>
+            </div>
+            <div class="uk-width-expand@m uk-padding-remove uk-text-left@m uk-text-center">
+                <h2>{{ object.last_name }} {{ object.fist_name }} {{ object.middle_name }}</h2>
+                <span>{{ object.position }}</span>
+            </div>
+            <div class="uk-width-1-4@m uk-text-right@m uk-text-center">
+                <a  href="{% url 'doctor_schedule' pk=object.id %}" class="uk-button-default uk-button recording_for_admission">Запись на приём</a>
+            </div>
+        </div>
+        <ul class="uk-tab-bottom uk-tab" >
+            {% url 'doctor_detail' pk=object.id as doctor_detil %}
+            {% url 'doctor_schedule' pk=object.id as doctor_schedule %}
+            {% url 'doctor_reviews' pk=object.id as doctor_reviews %}
+            {% url 'doctor_services' pk=object.id as doctor_services %}
+            <li {% if request.path == doctor_detil %}class="uk-active"{% endif %}><a href="{% url 'doctor_detail' pk=object.id %}">Образование и опыт работы</a></li>
+            <li {% if request.path == doctor_schedule %}class="uk-active"{% endif %}><a href="{% url 'doctor_schedule' pk=object.id %}">Расписание</a></li>
+
+            <li {% if request.path == doctor_reviews %}class="uk-active"{% endif %}><a href="{% url 'doctor_reviews' pk=object.id %}">Отзывы <span class="uk-badge">{{ reviews_count }}</span></a></li>
+            <li {% if request.path == doctor_services %}class="uk-active"{% endif %}><a href="{% url 'doctor_services' pk=object.id%}">Услуги <span class="uk-badge">{{ services_count }}</span></a></li>
+        </ul>
+
+        <div class="education_work">
+            {{ object.resume|safe }}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

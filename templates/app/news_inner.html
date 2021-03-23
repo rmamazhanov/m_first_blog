@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="medical_list_news inner uk-margin-medium-top">
+    <div class="uk-container uk-container-small">
+        <div class="uk-card-body bg-white ">
+            <div class="uk-card uk-grid-collapse  uk-margin">
+                <h1>{{ object.title }}</h1>
+                {{ object.text|safe }}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

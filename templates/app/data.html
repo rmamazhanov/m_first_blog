@@ -1,0 +1,19 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <title>Выписка</title>
+    </head>
+
+    <body>
+        {% for i in html %}
+            {{ i|safe }}
+            <hr>
+        {% endfor %}
+        <script src="{% static 'js/main.js' %}"></script>
+        <script>
+            $(document).ready(function () {
+                window.print();
+            });
+        </script>
+    </body>
+</html>
